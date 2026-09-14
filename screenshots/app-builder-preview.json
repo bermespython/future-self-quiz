@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "futureself",
+      "hasCanvas": false,
+      "bodyTextLen": 214,
+      "bodyTextHash": "691c5797690696a670fec4a29da55f8c1bcc05e1e0478fe9979225368bece450",
+      "bodyTextPrefix": "future self HAIR RESTORATION PROTOCOL CHOOSE YOUR AGE Age: 18–29",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "futureself",
+      "hasCanvas": false,
+      "bodyTextLen": 214,
+      "bodyTextHash": "691c5797690696a670fec4a29da55f8c1bcc05e1e0478fe9979225368bece450",
+      "bodyTextPrefix": "future self HAIR RESTORATION PROTOCOL CHOOSE YOUR AGE Age: 18–29",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

@@ -1,0 +1,238 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "ModernGothic";
+  src: url("/fonts/ModernGothic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ModernGothicMono";
+  src: url("/fonts/ModernGothicMono.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "FT Base";
+  src: url("/fonts/FTBase.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-bg: #ffffff;
+  --color-surface: #f3f3f4;
+  --color-fg: #232323;
+  --color-muted: #5c5c5c;
+  --color-subtle: #8c8c8c;
+  --color-border: #e6e6e8;
+  --color-line: #d8d8dc;
+  --color-ink: #1c1c1c;
+  --color-ink-fg: #ffffff;
+  --color-paper: #f7f7f8;
+  --color-disabled: #c8c8cc;
+  --color-disabled-fg: #ffffff;
+
+  --font-sans: "ModernGothic", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "ModernGothicMono", ui-monospace, "SF Mono", monospace;
+  --font-self: "FT Base", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+
+  --tracking-display: -0.045em;
+  --tracking-title: -0.035em;
+  --tracking-label: 0.16em;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body {
+    background: var(--color-surface);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    min-height: 100dvh;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-fg);
+    color: var(--color-bg);
+  }
+}
+
+@layer components {
+  .funnel-frame {
+    min-height: 100dvh;
+    background: var(--color-bg);
+  }
+
+  @media (min-width: 520px) {
+    .funnel-frame {
+      max-width: 430px;
+      margin-inline: auto;
+      box-shadow:
+        0 0 0 1px color-mix(in oklab, var(--color-fg) 8%, transparent),
+        0 30px 80px color-mix(in oklab, var(--color-fg) 10%, transparent);
+    }
+  }
+
+  .step-enter {
+    animation: step-in 420ms var(--ease-out-soft) both;
+  }
+
+  .dir-back .step-enter {
+    animation-name: step-in-back;
+  }
+
+  .stagger > * {
+    animation: rise 480ms var(--ease-out-soft) both;
+  }
+  .stagger > *:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .stagger > *:nth-child(2) {
+    animation-delay: 50ms;
+  }
+  .stagger > *:nth-child(3) {
+    animation-delay: 100ms;
+  }
+  .stagger > *:nth-child(4) {
+    animation-delay: 150ms;
+  }
+  .stagger > *:nth-child(5) {
+    animation-delay: 200ms;
+  }
+  .stagger > *:nth-child(6) {
+    animation-delay: 250ms;
+  }
+  .stagger > *:nth-child(7) {
+    animation-delay: 300ms;
+  }
+  .stagger > *:nth-child(8) {
+    animation-delay: 350ms;
+  }
+
+  .press {
+    transition:
+      transform 150ms ease-out,
+      opacity 150ms ease-out;
+  }
+  .press:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  .hairline {
+    height: 1px;
+    background: color-mix(in oklab, var(--color-fg) 12%, transparent);
+  }
+
+  .vial-stage {
+    touch-action: none;
+    cursor: ew-resize;
+    user-select: none;
+  }
+
+  .vial-stage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes step-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes analyze-bar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-enter,
+  .stagger > *,
+  .dir-back .step-enter {
+    animation: none !important;
+  }
+}
