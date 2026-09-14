@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import {
   AGES,
   COMPOUNDS,
+  CURRENTS,
+  DESIREDS,
   DURATIONS,
   EXTRAS,
   GOALS,
@@ -14,8 +16,6 @@ import {
   patternLabel,
 } from "@/lib/funnel-content";
 import {
-  ageCount,
-  ageLabel,
   recommendCompound,
   useFunnel,
 } from "@/lib/funnel-store";
@@ -31,34 +31,30 @@ import {
 } from "@/components/funnel/ui";
 import { cn } from "@/lib/utils";
 
-export function AgeScreen() {
-  const setAge = useFunnel((s) => s.setAge);
+export function CurrentScreen() {
+  const setCurrent = useFunnel((s) => s.setCurrent);
   return (
     <div className="flex flex-1 flex-col px-5 pb-10 pt-7">
       <div className="stagger text-center">
-        <h1 className="text-[1.7rem] uppercase leading-[1.05] tracking-display sm:text-[1.85rem]">
-          Hair restoration
-          <br />
-          protocol
-        </h1>
-        <p className="mt-3 font-mono text-[11px] uppercase tracking-label text-subtle">
-          Choose your age
+        <p className="font-mono text-[11px] uppercase tracking-label text-subtle">
+          Hair restoration protocol
         </p>
+        <h1 className="mt-3 text-[1.7rem] leading-[1.12] tracking-title sm:text-[1.85rem]">
+          Which one is you currently?
+        </h1>
       </div>
       <div className="mt-7 grid grid-cols-2 gap-3">
-        {AGES.map((age) => (
+        {CURRENTS.map((item) => (
           <AgeCard
-            key={age.id}
-            image={age.image}
-            label={age.label}
-            onSelect={() => setAge(age.id)}
+            key={item.id}
+            image={item.image}
+            label={item.label}
+            onSelect={() => setCurrent(item.id)}
           />
         ))}
       </div>
       <div className="mt-8 text-center text-[13px] leading-relaxed text-fg">
-        <p>
-          By choosing your age and continuing you agree to our
-        </p>
+        <p>By continuing you agree to our</p>
         <p className="mt-1">
           <Link to="/terms" className="underline underline-offset-2">
             Terms of Service
@@ -74,19 +70,64 @@ export function AgeScreen() {
   );
 }
 
+export function DesiredScreen() {
+  const setDesired = useFunnel((s) => s.setDesired);
+  return (
+    <div className="flex flex-1 flex-col px-5 pb-10 pt-7">
+      <div className="stagger text-center">
+        <p className="font-mono text-[11px] uppercase tracking-label text-subtle">
+          Your future self
+        </p>
+        <h1 className="mt-3 text-[1.7rem] leading-[1.12] tracking-title sm:text-[1.85rem]">
+          Which one describes
+          <br />
+          where you want to be?
+        </h1>
+      </div>
+      <div className="mt-7 grid grid-cols-2 gap-3">
+        {DESIREDS.map((item) => (
+          <AgeCard
+            key={item.id}
+            image={item.image}
+            label={item.label}
+            onSelect={() => setDesired(item.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function AgeScreen() {
+  const setAge = useFunnel((s) => s.setAge);
+  return (
+    <div className="flex flex-1 flex-col px-5 pt-7">
+      <ScreenTitle className="text-center">What's your age?</ScreenTitle>
+      <div className="stagger mt-6 flex flex-col gap-3">
+        {AGES.map((age) => (
+          <OptionRow
+            key={age.id}
+            label={age.label}
+            selected={false}
+            onSelect={() => setAge(age.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function ProofScreen() {
-  const age = useFunnel((s) => s.age);
   const next = useFunnel((s) => s.next);
   return (
     <div className="flex flex-1 flex-col">
       <div className="flex flex-1 flex-col px-5 pt-8">
         <div className="stagger text-center">
           <h1 className="text-[1.85rem] leading-tight tracking-title">
-            Over {ageCount(age)} people
+            Over 1.4 million people
           </h1>
           <p className="mt-2 text-[15px] leading-snug text-muted">
-            in <span className="text-fg">their {ageLabel(age).replace("their ", "")}</span> have
-            chosen futureself to restore density and calm shedding
+            have chosen futureself to restore density and calm shedding
           </p>
         </div>
         <img
@@ -233,7 +274,7 @@ function PhoneShell({ children, className }: { children: ReactNode; className?: 
 
 function PhoneRack() {
   const goal = useFunnel((s) => s.goal);
-  const age = useFunnel((s) => s.age);
+  const pattern = useFunnel((s) => s.pattern);
   const goalLabel =
     goal === "hairline"
       ? "Hairline"
@@ -246,11 +287,11 @@ function PhoneRack() {
   return (
     <div className="relative mx-auto mt-6 h-[300px] w-full overflow-hidden rounded-2xl bg-surface">
       <PhoneShell className="absolute left-[-8%] top-[30%] z-[1] w-[44%] -rotate-[16deg] opacity-90">
-        <img src="/images/social-proof.jpg" alt="" className="h-52 w-full object-cover" />
+        <img src="/images/desired-density.jpg" alt="" className="h-52 w-full object-cover" />
       </PhoneShell>
       <PhoneShell className="absolute right-[-8%] top-[28%] z-[1] w-[44%] rotate-[16deg] opacity-90">
         <img
-          src="/images/pattern-part.jpg"
+          src="/images/current-hairline.jpg"
           alt=""
           className="h-52 w-full object-cover object-top"
         />
@@ -263,12 +304,12 @@ function PhoneRack() {
                 <img
                   src={
                     i === 0
-                      ? "/images/social-proof.jpg"
+                      ? "/images/current-hairline.jpg"
                       : i === 1
-                        ? "/images/pattern-hairline.jpg"
+                        ? "/images/current-crown.jpg"
                         : i === 2
-                          ? "/images/pattern-part.jpg"
-                          : "/images/encourage.jpg"
+                          ? "/images/desired-hairline.jpg"
+                          : "/images/desired-density.jpg"
                   }
                   alt=""
                   className="size-full object-cover"
@@ -284,8 +325,8 @@ function PhoneRack() {
             <p>{goalLabel}</p>
           </div>
           <div className="text-right">
-            <p className="text-subtle">Age band</p>
-            <p>{age ?? "40–49"}</p>
+            <p className="text-subtle">Pattern</p>
+            <p className="capitalize">{patternLabel(pattern)}</p>
           </div>
         </div>
         <img src="/images/encourage.jpg" alt="" className="h-24 w-full bg-paper object-contain" />
@@ -483,9 +524,8 @@ export function PlanScreen() {
         </p>
         <ScreenTitle className="mt-2">Your 12-week hair protocol</ScreenTitle>
         <p className="mt-3 text-[15px] leading-relaxed text-muted">
-          Based on your {answers.age} profile and {patternLabel(answers.pattern)} pattern, we
-          matched <span className="text-fg">{meta.name}</span> — {meta.classification.toLowerCase()}
-          .
+          Based on your {patternLabel(answers.pattern)} pattern, we matched{" "}
+          <span className="text-fg">{meta.name}</span> — {meta.classification.toLowerCase()}.
         </p>
         <div className="mt-6 grid grid-cols-3 gap-2">
           {[

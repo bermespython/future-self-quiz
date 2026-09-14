@@ -3,17 +3,19 @@ import { L as require_react, R as require_jsx_runtime, _ as Link } from "../_lib
 import { n as Wordmark, r as cn } from "./brand-YL4vt9Mx.mjs";
 import { a as ChevronRight, c as ArrowLeftRight, i as CircleHelp, o as Check, r as Menu, s as ArrowLeft, t as X } from "../_libs/lucide-react.mjs";
 import { t as create } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-kxRSIjWZ.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-Bfog8q_a.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var STEPS = [
-	"age",
+	"current",
+	"desired",
 	"proof",
 	"tried",
 	"encourage",
 	"goal",
 	"showcase",
 	"extras",
+	"age",
 	"pattern",
 	"duration",
 	"severity",
@@ -27,6 +29,7 @@ var QUIZ_STEPS = [
 	"tried",
 	"goal",
 	"extras",
+	"age",
 	"pattern",
 	"duration",
 	"severity"
@@ -39,6 +42,8 @@ function readPersisted() {
 		if (!raw) return {};
 		const data = JSON.parse(raw);
 		if (data.step === "analyze") data.step = "plan";
+		if (!data.current) data.step = "current";
+		if (data.step && !STEPS.includes(data.step)) data.step = "current";
 		return data;
 	} catch {
 		return {};
@@ -49,6 +54,8 @@ function writePersisted(s) {
 	try {
 		const slice = {
 			step: s.step,
+			current: s.current,
+			desired: s.desired,
 			age: s.age,
 			triedBefore: s.triedBefore,
 			goal: s.goal,
@@ -64,7 +71,7 @@ function writePersisted(s) {
 	} catch {}
 }
 var useFunnel = create((set, get) => ({
-	step: "age",
+	step: "current",
 	direction: 1,
 	menuOpen: false,
 	helpOpen: false,
@@ -99,11 +106,13 @@ var useFunnel = create((set, get) => ({
 		const p = readPersisted();
 		set({
 			hydrated: true,
-			step: p.step ?? "age",
+			step: p.step ?? "current",
 			cartCount: p.cartCount ?? 0,
 			extras: p.extras ?? [],
 			email: p.email ?? "",
 			plan: p.plan ?? "12-week",
+			current: p.current,
+			desired: p.desired,
 			age: p.age,
 			triedBefore: p.triedBefore,
 			goal: p.goal,
@@ -117,7 +126,7 @@ var useFunnel = create((set, get) => ({
 			sessionStorage.removeItem(STORAGE_KEY);
 		} catch {}
 		set({
-			step: "age",
+			step: "current",
 			direction: 1,
 			menuOpen: false,
 			helpOpen: false,
@@ -125,6 +134,8 @@ var useFunnel = create((set, get) => ({
 			extras: [],
 			email: "",
 			plan: "12-week",
+			current: void 0,
+			desired: void 0,
 			age: void 0,
 			triedBefore: void 0,
 			goal: void 0,
@@ -134,9 +145,20 @@ var useFunnel = create((set, get) => ({
 			hydrated: true
 		});
 	},
+	setCurrent: (current) => set({
+		current,
+		pattern: current,
+		step: "desired",
+		direction: 1
+	}),
+	setDesired: (desired) => set({
+		desired,
+		step: "proof",
+		direction: 1
+	}),
 	setAge: (age) => set({
 		age,
-		step: "proof",
+		step: "pattern",
 		direction: 1
 	}),
 	setTried: (triedBefore) => set({
@@ -184,24 +206,11 @@ function recommendCompound(a) {
 	if (a.age === "50+" || a.triedBefore) return "liraglutide";
 	return "semaglutide";
 }
-function ageLabel(age) {
-	if (age === "18-29") return "their 20s";
-	if (age === "30-39") return "their 30s";
-	if (age === "40-49") return "their 40s";
-	if (age === "50+") return "their 50s";
-	return "their 40s";
-}
-function ageCount(age) {
-	if (age === "18-29") return "420,000";
-	if (age === "30-39") return "860,000";
-	if (age === "40-49") return "1.4 million";
-	if (age === "50+") return "610,000";
-	return "1.4 million";
-}
 var TITLES = {
 	tried: "My Profile",
 	goal: "My Profile",
 	extras: "My Profile",
+	age: "My Profile",
 	pattern: "My Profile",
 	duration: "My Profile",
 	severity: "My Profile",
@@ -217,7 +226,7 @@ function FunnelHeader() {
 	const cartCount = useFunnel((s) => s.cartCount);
 	const setStep = useFunnel((s) => s.setStep);
 	const quizIndex = QUIZ_STEPS.indexOf(step);
-	const showBack = step !== "age";
+	const showBack = step !== "current";
 	const title = TITLES[step];
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
 		className: "sticky top-0 z-30 bg-bg",
@@ -366,7 +375,7 @@ function FunnelMenu() {
 }
 function HelpFab() {
 	const setHelpOpen = useFunnel((s) => s.setHelpOpen);
-	if (useFunnel((s) => s.step) !== "age") return null;
+	if (useFunnel((s) => s.step) !== "current") return null;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 		type: "button",
 		onClick: () => setHelpOpen(true),
@@ -419,26 +428,66 @@ function HelpDialog() {
 		})
 	});
 }
+var CURRENTS = [
+	{
+		id: "hairline",
+		label: "Receding",
+		image: "/images/current-hairline.jpg"
+	},
+	{
+		id: "crown",
+		label: "Thinning crown",
+		image: "/images/current-crown.jpg"
+	},
+	{
+		id: "part",
+		label: "Widening part",
+		image: "/images/current-part.jpg"
+	},
+	{
+		id: "diffuse",
+		label: "Diffuse",
+		image: "/images/current-diffuse.jpg"
+	}
+];
+var DESIREDS = [
+	{
+		id: "density",
+		label: "Full density",
+		image: "/images/desired-density.jpg"
+	},
+	{
+		id: "hairline",
+		label: "Restored line",
+		image: "/images/desired-hairline.jpg"
+	},
+	{
+		id: "coverage",
+		label: "Thick coverage",
+		image: "/images/desired-coverage.jpg"
+	},
+	{
+		id: "volume",
+		label: "Natural volume",
+		image: "/images/desired-volume.jpg"
+	}
+];
 var AGES = [
 	{
 		id: "18-29",
-		label: "Age: 18–29",
-		image: "/images/age-18.jpg"
+		label: "18–29"
 	},
 	{
 		id: "30-39",
-		label: "Age: 30–39",
-		image: "/images/age-30.jpg"
+		label: "30–39"
 	},
 	{
 		id: "40-49",
-		label: "Age: 40–49",
-		image: "/images/age-40.jpg"
+		label: "40–49"
 	},
 	{
 		id: "50+",
-		label: "Age: 50+",
-		image: "/images/age-50.jpg"
+		label: "50+"
 	}
 ];
 var GOALS = [
@@ -499,22 +548,22 @@ var PATTERNS = [
 	{
 		id: "hairline",
 		label: "Receding hairline",
-		image: "/images/pattern-hairline.jpg"
+		image: "/images/current-hairline.jpg"
 	},
 	{
 		id: "crown",
 		label: "Thinning crown",
-		image: "/images/pattern-crown.jpg"
+		image: "/images/current-crown.jpg"
 	},
 	{
 		id: "part",
 		label: "Widening part",
-		image: "/images/pattern-part.jpg"
+		image: "/images/current-part.jpg"
 	},
 	{
 		id: "diffuse",
 		label: "Diffuse thinning",
-		image: "/images/pattern-diffuse.jpg"
+		image: "/images/current-diffuse.jpg"
 	}
 ];
 var DURATIONS = [
@@ -811,11 +860,11 @@ function AgeCard({ image, label, onSelect }) {
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
 			src: image,
 			alt: "",
-			className: "aspect-square w-full object-cover object-[center_18%]"
+			className: "aspect-square w-full object-cover object-center"
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
 			className: "absolute inset-x-0 bottom-0 flex items-center justify-between bg-ink px-3 py-2.5 text-ink-fg",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-				className: "text-[13px]",
+				className: "truncate text-[13px]",
 				children: label
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 				className: "grid size-6 place-items-center rounded-full border border-ink-fg/35",
@@ -835,7 +884,7 @@ function PatternCard({ image, label, selected, onSelect }) {
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
 			src: image,
 			alt: "",
-			className: "aspect-square w-full object-cover object-[center_10%]"
+			className: "aspect-square w-full object-cover object-center"
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
 			className: "flex items-center justify-between gap-2 px-3 py-2.5",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
@@ -854,37 +903,33 @@ function ScreenTitle({ children, className }) {
 		children
 	});
 }
-function AgeScreen() {
-	const setAge = useFunnel((s) => s.setAge);
+function CurrentScreen() {
+	const setCurrent = useFunnel((s) => s.setCurrent);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "flex flex-1 flex-col px-5 pb-10 pt-7",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "stagger text-center",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h1", {
-					className: "text-[1.7rem] uppercase leading-[1.05] tracking-display sm:text-[1.85rem]",
-					children: [
-						"Hair restoration",
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
-						"protocol"
-					]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-3 font-mono text-[11px] uppercase tracking-label text-subtle",
-					children: "Choose your age"
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "font-mono text-[11px] uppercase tracking-label text-subtle",
+					children: "Hair restoration protocol"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "mt-3 text-[1.7rem] leading-[1.12] tracking-title sm:text-[1.85rem]",
+					children: "Which one is you currently?"
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				className: "mt-7 grid grid-cols-2 gap-3",
-				children: AGES.map((age) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AgeCard, {
-					image: age.image,
-					label: age.label,
-					onSelect: () => setAge(age.id)
-				}, age.id))
+				children: CURRENTS.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AgeCard, {
+					image: item.image,
+					label: item.label,
+					onSelect: () => setCurrent(item.id)
+				}, item.id))
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "mt-8 text-center text-[13px] leading-relaxed text-fg",
 				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "By choosing your age and continuing you agree to our" }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "By continuing you agree to our" }),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
 						className: "mt-1",
 						children: [
@@ -910,8 +955,51 @@ function AgeScreen() {
 		]
 	});
 }
+function DesiredScreen() {
+	const setDesired = useFunnel((s) => s.setDesired);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "flex flex-1 flex-col px-5 pb-10 pt-7",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "stagger text-center",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "font-mono text-[11px] uppercase tracking-label text-subtle",
+				children: "Your future self"
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h1", {
+				className: "mt-3 text-[1.7rem] leading-[1.12] tracking-title sm:text-[1.85rem]",
+				children: [
+					"Which one describes",
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
+					"where you want to be?"
+				]
+			})]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "mt-7 grid grid-cols-2 gap-3",
+			children: DESIREDS.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AgeCard, {
+				image: item.image,
+				label: item.label,
+				onSelect: () => setDesired(item.id)
+			}, item.id))
+		})]
+	});
+}
+function AgeScreen() {
+	const setAge = useFunnel((s) => s.setAge);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "flex flex-1 flex-col px-5 pt-7",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScreenTitle, {
+			className: "text-center",
+			children: "What's your age?"
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "stagger mt-6 flex flex-col gap-3",
+			children: AGES.map((age) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OptionRow, {
+				label: age.label,
+				selected: false,
+				onSelect: () => setAge(age.id)
+			}, age.id))
+		})]
+	});
+}
 function ProofScreen() {
-	const age = useFunnel((s) => s.age);
 	const next = useFunnel((s) => s.next);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "flex flex-1 flex-col",
@@ -920,23 +1008,12 @@ function ProofScreen() {
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "stagger text-center",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h1", {
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
 						className: "text-[1.85rem] leading-tight tracking-title",
-						children: [
-							"Over ",
-							ageCount(age),
-							" people"
-						]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						children: "Over 1.4 million people"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 						className: "mt-2 text-[15px] leading-snug text-muted",
-						children: [
-							"in ",
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-								className: "text-fg",
-								children: ["their ", ageLabel(age).replace("their ", "")]
-							}),
-							" have chosen futureself to restore density and calm shedding"
-						]
+						children: "have chosen futureself to restore density and calm shedding"
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
@@ -1089,7 +1166,7 @@ function PhoneShell({ children, className }) {
 }
 function PhoneRack() {
 	const goal = useFunnel((s) => s.goal);
-	const age = useFunnel((s) => s.age);
+	const pattern = useFunnel((s) => s.pattern);
 	const goalLabel = goal === "hairline" ? "Hairline" : goal === "shedding" ? "Stop shedding" : goal === "maintain" ? "Maintain" : "Reverse thinning";
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "relative mx-auto mt-6 h-[300px] w-full overflow-hidden rounded-2xl bg-surface",
@@ -1097,7 +1174,7 @@ function PhoneRack() {
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PhoneShell, {
 				className: "absolute left-[-8%] top-[30%] z-[1] w-[44%] -rotate-[16deg] opacity-90",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-					src: "/images/social-proof.jpg",
+					src: "/images/desired-density.jpg",
 					alt: "",
 					className: "h-52 w-full object-cover"
 				})
@@ -1105,7 +1182,7 @@ function PhoneRack() {
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PhoneShell, {
 				className: "absolute right-[-8%] top-[28%] z-[1] w-[44%] rotate-[16deg] opacity-90",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-					src: "/images/pattern-part.jpg",
+					src: "/images/current-hairline.jpg",
 					alt: "",
 					className: "h-52 w-full object-cover object-top"
 				})
@@ -1123,7 +1200,7 @@ function PhoneRack() {
 						].map((d, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 							className: "aspect-square overflow-hidden rounded-sm bg-surface",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-								src: i === 0 ? "/images/social-proof.jpg" : i === 1 ? "/images/pattern-hairline.jpg" : i === 2 ? "/images/pattern-part.jpg" : "/images/encourage.jpg",
+								src: i === 0 ? "/images/current-hairline.jpg" : i === 1 ? "/images/current-crown.jpg" : i === 2 ? "/images/desired-hairline.jpg" : "/images/desired-density.jpg",
 								alt: "",
 								className: "size-full object-cover"
 							})
@@ -1141,8 +1218,11 @@ function PhoneRack() {
 							className: "text-right",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 								className: "text-subtle",
-								children: "Age band"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: age ?? "40–49" })]
+								children: "Pattern"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "capitalize",
+								children: patternLabel(pattern)
+							})]
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
@@ -1350,10 +1430,9 @@ function PlanScreen() {
 					className: "mt-3 text-[15px] leading-relaxed text-muted",
 					children: [
 						"Based on your ",
-						answers.age,
-						" profile and ",
 						patternLabel(answers.pattern),
-						" pattern, we matched ",
+						" pattern, we matched",
+						" ",
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 							className: "text-fg",
 							children: meta.name
@@ -1650,13 +1729,15 @@ function ConfirmScreen() {
 	});
 }
 var SCREENS = {
-	age: AgeScreen,
+	current: CurrentScreen,
+	desired: DesiredScreen,
 	proof: ProofScreen,
 	tried: TriedScreen,
 	encourage: EncourageScreen,
 	goal: GoalScreen,
 	showcase: ShowcaseScreen,
 	extras: ExtrasScreen,
+	age: AgeScreen,
 	pattern: PatternScreen,
 	duration: DurationScreen,
 	severity: SeverityScreen,

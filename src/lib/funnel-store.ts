@@ -1,13 +1,15 @@
 import { create } from "zustand";
 
 export const STEPS = [
-  "age",
+  "current",
+  "desired",
   "proof",
   "tried",
   "encourage",
   "goal",
   "showcase",
   "extras",
+  "age",
   "pattern",
   "duration",
   "severity",
@@ -23,6 +25,7 @@ export type StepId = (typeof STEPS)[number];
 export type AgeBand = "18-29" | "30-39" | "40-49" | "50+";
 export type Goal = "reverse" | "hairline" | "shedding" | "maintain";
 export type Pattern = "hairline" | "crown" | "part" | "diffuse";
+export type DesiredLook = "density" | "hairline" | "coverage" | "volume";
 export type Duration = "under-6m" | "6-12m" | "1-3y" | "over-3y";
 export type Severity = "mild" | "moderate" | "advanced" | "severe";
 export type Compound = "semaglutide" | "tirzepatide" | "liraglutide";
@@ -32,12 +35,15 @@ export const QUIZ_STEPS: StepId[] = [
   "tried",
   "goal",
   "extras",
+  "age",
   "pattern",
   "duration",
   "severity",
 ];
 
 export type Answers = {
+  current?: Pattern;
+  desired?: DesiredLook;
   age?: AgeBand;
   triedBefore?: boolean;
   goal?: Goal;
@@ -61,6 +67,8 @@ type FunnelState = Answers & {
   back: () => void;
   reset: () => void;
   hydrate: () => void;
+  setCurrent: (current: Pattern) => void;
+  setDesired: (desired: DesiredLook) => void;
   setAge: (age: AgeBand) => void;
   setTried: (triedBefore: boolean) => void;
   setGoal: (goal: Goal) => void;
@@ -86,6 +94,8 @@ export function readPersisted(): Persisted {
     if (!raw) return {};
     const data = JSON.parse(raw) as Persisted;
     if (data.step === "analyze") data.step = "plan";
+    if (!data.current) data.step = "current";
+    if (data.step && !STEPS.includes(data.step)) data.step = "current";
     return data;
   } catch {
     return {};
@@ -97,6 +107,8 @@ function writePersisted(s: FunnelState) {
   try {
     const slice: Persisted = {
       step: s.step,
+      current: s.current,
+      desired: s.desired,
       age: s.age,
       triedBefore: s.triedBefore,
       goal: s.goal,
@@ -115,7 +127,7 @@ function writePersisted(s: FunnelState) {
 }
 
 export const useFunnel = create<FunnelState>((set, get) => ({
-  step: "age",
+  step: "current",
   direction: 1,
   menuOpen: false,
   helpOpen: false,
@@ -142,11 +154,13 @@ export const useFunnel = create<FunnelState>((set, get) => ({
     const p = readPersisted();
     set({
       hydrated: true,
-      step: p.step ?? "age",
+      step: p.step ?? "current",
       cartCount: p.cartCount ?? 0,
       extras: p.extras ?? [],
       email: p.email ?? "",
       plan: p.plan ?? "12-week",
+      current: p.current,
+      desired: p.desired,
       age: p.age,
       triedBefore: p.triedBefore,
       goal: p.goal,
@@ -162,7 +176,7 @@ export const useFunnel = create<FunnelState>((set, get) => ({
       /* ignore */
     }
     set({
-      step: "age",
+      step: "current",
       direction: 1,
       menuOpen: false,
       helpOpen: false,
@@ -170,6 +184,8 @@ export const useFunnel = create<FunnelState>((set, get) => ({
       extras: [],
       email: "",
       plan: "12-week",
+      current: undefined,
+      desired: undefined,
       age: undefined,
       triedBefore: undefined,
       goal: undefined,
@@ -179,7 +195,10 @@ export const useFunnel = create<FunnelState>((set, get) => ({
       hydrated: true,
     });
   },
-  setAge: (age) => set({ age, step: "proof", direction: 1 }),
+  setCurrent: (current) =>
+    set({ current, pattern: current, step: "desired", direction: 1 }),
+  setDesired: (desired) => set({ desired, step: "proof", direction: 1 }),
+  setAge: (age) => set({ age, step: "pattern", direction: 1 }),
   setTried: (triedBefore) => set({ triedBefore, step: "encourage", direction: 1 }),
   setGoal: (goal) => set({ goal, step: "showcase", direction: 1 }),
   toggleExtra: (id) =>

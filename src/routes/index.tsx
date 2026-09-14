@@ -5,6 +5,8 @@ import {
   AgeScreen,
   AnalyzeScreen,
   ConfirmScreen,
+  CurrentScreen,
+  DesiredScreen,
   DurationScreen,
   EncourageScreen,
   ExtrasScreen,
@@ -24,13 +26,15 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({ component: Home });
 
 const SCREENS: Record<StepId, ComponentType> = {
-  age: AgeScreen,
+  current: CurrentScreen,
+  desired: DesiredScreen,
   proof: ProofScreen,
   tried: TriedScreen,
   encourage: EncourageScreen,
   goal: GoalScreen,
   showcase: ShowcaseScreen,
   extras: ExtrasScreen,
+  age: AgeScreen,
   pattern: PatternScreen,
   duration: DurationScreen,
   severity: SeverityScreen,

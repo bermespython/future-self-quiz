@@ -107,10 +107,10 @@ export function AgeCard({
       <img
         src={image}
         alt=""
-        className="aspect-square w-full object-cover object-[center_18%]"
+        className="aspect-square w-full object-cover object-center"
       />
       <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-ink px-3 py-2.5 text-ink-fg">
-        <span className="text-[13px]">{label}</span>
+        <span className="truncate text-[13px]">{label}</span>
         <span className="grid size-6 place-items-center rounded-full border border-ink-fg/35">
           <ChevronRight className="size-3.5" strokeWidth={2.2} />
         </span>
@@ -139,7 +139,7 @@ export function PatternCard({
         selected ? "border-fg" : "border-border",
       )}
     >
-      <img src={image} alt="" className="aspect-square w-full object-cover object-[center_10%]" />
+      <img src={image} alt="" className="aspect-square w-full object-cover object-center" />
       <span className="flex items-center justify-between gap-2 px-3 py-2.5">
         <span className="text-[13px] leading-tight">{label}</span>
         <span

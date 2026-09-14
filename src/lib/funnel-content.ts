@@ -1,10 +1,24 @@
-import type { AgeBand, Compound, Goal, Pattern } from "@/lib/funnel-store";
+import type { AgeBand, Compound, DesiredLook, Goal, Pattern } from "@/lib/funnel-store";
 
-export const AGES: { id: AgeBand; label: string; image: string }[] = [
-  { id: "18-29", label: "Age: 18–29", image: "/images/age-18.jpg" },
-  { id: "30-39", label: "Age: 30–39", image: "/images/age-30.jpg" },
-  { id: "40-49", label: "Age: 40–49", image: "/images/age-40.jpg" },
-  { id: "50+", label: "Age: 50+", image: "/images/age-50.jpg" },
+export const CURRENTS: { id: Pattern; label: string; image: string }[] = [
+  { id: "hairline", label: "Receding", image: "/images/current-hairline.jpg" },
+  { id: "crown", label: "Thinning crown", image: "/images/current-crown.jpg" },
+  { id: "part", label: "Widening part", image: "/images/current-part.jpg" },
+  { id: "diffuse", label: "Diffuse", image: "/images/current-diffuse.jpg" },
+];
+
+export const DESIREDS: { id: DesiredLook; label: string; image: string }[] = [
+  { id: "density", label: "Full density", image: "/images/desired-density.jpg" },
+  { id: "hairline", label: "Restored line", image: "/images/desired-hairline.jpg" },
+  { id: "coverage", label: "Thick coverage", image: "/images/desired-coverage.jpg" },
+  { id: "volume", label: "Natural volume", image: "/images/desired-volume.jpg" },
+];
+
+export const AGES: { id: AgeBand; label: string }[] = [
+  { id: "18-29", label: "18–29" },
+  { id: "30-39", label: "30–39" },
+  { id: "40-49", label: "40–49" },
+  { id: "50+", label: "50+" },
 ];
 
 export const GOALS: { id: Goal; label: string; icon: "strands" | "hairline" | "drop" | "shield" }[] =
@@ -29,10 +43,10 @@ export const EXTRAS: {
 ];
 
 export const PATTERNS: { id: Pattern; label: string; image: string }[] = [
-  { id: "hairline", label: "Receding hairline", image: "/images/pattern-hairline.jpg" },
-  { id: "crown", label: "Thinning crown", image: "/images/pattern-crown.jpg" },
-  { id: "part", label: "Widening part", image: "/images/pattern-part.jpg" },
-  { id: "diffuse", label: "Diffuse thinning", image: "/images/pattern-diffuse.jpg" },
+  { id: "hairline", label: "Receding hairline", image: "/images/current-hairline.jpg" },
+  { id: "crown", label: "Thinning crown", image: "/images/current-crown.jpg" },
+  { id: "part", label: "Widening part", image: "/images/current-part.jpg" },
+  { id: "diffuse", label: "Diffuse thinning", image: "/images/current-diffuse.jpg" },
 ];
 
 export const DURATIONS = [

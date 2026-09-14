@@ -8,6 +8,7 @@ const TITLES: Partial<Record<StepId, string>> = {
   tried: "My Profile",
   goal: "My Profile",
   extras: "My Profile",
+  age: "My Profile",
   pattern: "My Profile",
   duration: "My Profile",
   severity: "My Profile",
@@ -24,7 +25,7 @@ export function FunnelHeader() {
   const cartCount = useFunnel((s) => s.cartCount);
   const setStep = useFunnel((s) => s.setStep);
   const quizIndex = QUIZ_STEPS.indexOf(step);
-  const showBack = step !== "age";
+  const showBack = step !== "current";
   const title = TITLES[step];
   const compactBrand = step === "product" || step === "reserve" || step === "confirm";
 
@@ -178,7 +179,7 @@ export function FunnelMenu() {
 export function HelpFab() {
   const setHelpOpen = useFunnel((s) => s.setHelpOpen);
   const step = useFunnel((s) => s.step);
-  if (step !== "age") return null;
+  if (step !== "current") return null;
   return (
     <button
       type="button"
